@@ -1,20 +1,19 @@
-{ 
+{
   "name": "speed-reading",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
+  "version": "1.0.0",
+  "main": "eslint.config.js",
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
-  }, 
-  "dependencies": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
     "@eslint/js": "^9.18.0",
     "@stylistic/eslint-plugin": "^2.12.1",
-    "autoprefixer": "^10.4.20",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-html": "^8.1.2",
-    "eslint-plugin-prettier": "^5.2.1",
-    "pdf-parse": "^1.1.1"
+    "eslint-plugin-prettier": "^5.2.1"
   }
 }
