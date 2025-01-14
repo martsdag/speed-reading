@@ -2,6 +2,7 @@
   "name": "speed-reading",
   "version": "1.0.0",
   "main": "eslint.config.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
