@@ -15,7 +15,7 @@
       <header class="header">
         <div class="header__container">
           <div class="header__logo">
-            <img src="/src/assets/logo/book-logo.png" width="30" height="30" alt="book">
+            <img src="/public/book-logo.png" width="30" height="30" alt="book">
           </div>
           <span class="header__title">Speed reading</span>
         </div>
@@ -27,8 +27,8 @@
       </div>
       <div id="pdf-text"></div>
       <div class="switch-page">
-      <button id="previous-page-button" class="button" onclick="getToPreviousPage()">Предыдущая страница</button>
-      <button id="next-page-button" class="button" onclick="getToNextPage()">Следующая страница</button>
+      <button id="previous-page-button" class="button" disabled onclick="getToPreviousPage()">Предыдущая страница</button>
+      <button id="next-page-button" class="button" disabled onclick="getToNextPage()">Следующая страница</button>
       </div>
       <footer class="footer">
         Footer

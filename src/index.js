@@ -10,11 +10,12 @@ const nextPageButton = document.getElementById('next-page-button');
 let pdf = null;
 let currentPage = 1;
 
-const pageRendering = (pageNumber) => {
+const renderPage = (pageNumber) => {
   pdf
     .getPage(pageNumber)
     .then((page) => page.getTextContent())
     .then((textContent) => {
+      //TODO: написать обработку исключений
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
       pdfText.textContent = pageText;
@@ -33,8 +34,8 @@ const handlingPDF = (file) => {
       pdf = savedPdf;
 
       currentPage = 1;
-      pageRendering(currentPage);
-      buttonsState();
+      renderPage(currentPage);
+      updateButtonsDisability();
     });
   };
 
@@ -57,8 +58,8 @@ const getToPreviousPage = () => {
   }
 
   currentPage--;
-  pageRendering(currentPage);
-  buttonsState();
+  renderPage(currentPage);
+  updateButtonsDisability();
 };
 
 const getToNextPage = () => {
@@ -67,11 +68,11 @@ const getToNextPage = () => {
   }
 
   currentPage++;
-  pageRendering(currentPage);
-  buttonsState();
+  renderPage(currentPage);
+  updateButtonsDisability();
 };
 
-const buttonsState = () => {
+const updateButtonsDisability = () => {
   if (!pdf) {
     return;
   }
