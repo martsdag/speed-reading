@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/public/book-logo.png">
     <link rel="stylesheet" type="text/css" href="src/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,30 +12,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   </head>
   <body>
-    <div>
       <header class="header">
         <div class="header__container">
-          <div class="header__logo">
-            <img src="/public/book-logo.png" width="30" height="30" alt="book">
-          </div>
+          <img src="/public/book-logo.png" width="30" height="30" alt="book">
           <span class="header__title">Speed reading</span>
         </div>
       </header>
+      <main>  
       <div class="file-upload">
-        <label class="file-upload__label">Выберите файл для загрузки:</label>
-        <input class="file-upload__input" type="file" accept=".pdf" name="uploaded-file">
-        <button id="send-button" class="button" onclick="sendFile()">Отправить</button>
+        <label class="file-upload__label" for="file-upload-input">Выберите файл для загрузки:
+          <input id="file-upload-input" type="file" accept=".pdf" onchange="onChangeUploadedFile(event)">
+        </label>
       </div>
-      <div id="pdf-text"></div>
+      <div id="pdf-text-element"></div>
       <div class="switch-page">
-      <button id="previous-page-button" class="button" disabled onclick="getToPreviousPage()">Предыдущая страница</button>
-      <button id="next-page-button" class="button" disabled onclick="getToNextPage()">Следующая страница</button>
+        <button id="previous-page-button" class="button" disabled onclick="onClickButtonPrev()">Предыдущая страница</button>
+        <button id="next-page-button" class="button" disabled onclick="onClickButtonNext()">Следующая страница</button>
       </div>
+    </main>
       <footer class="footer">
-        Footer
-        <div class="footer__container"></div>
+        <div class="footer__container">Footer</div>
       </footer>
-      </div>
       <script src="src/index.js"></script>
   </body>
 </html>

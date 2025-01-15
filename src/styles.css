@@ -81,7 +81,14 @@ body {
   gap: 1rem;
   align-items: center;
   padding: 1rem;
+
+  .file-upload__label {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
 }
+
 
 .header {
   .header__container {

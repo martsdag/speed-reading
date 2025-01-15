@@ -2,8 +2,7 @@ const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-const fileUploadInput = document.querySelector('.file-upload__input');
-const pdfText = document.getElementById('pdf-text');
+const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
 
@@ -11,18 +10,25 @@ let pdf = null;
 let currentPage = 1;
 
 const renderPage = (pageNumber) => {
+  //TODO: написать обработку исключений
   pdf
     .getPage(pageNumber)
     .then((page) => page.getTextContent())
     .then((textContent) => {
-      //TODO: написать обработку исключений
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
-      pdfText.textContent = pageText;
+      pdfTextElement.textContent = pageText;
     });
 };
 
-const handlingPDF = (file) => {
+const onChangeUploadedFile = (event) => {
+  const input = event.target;
+  const file = input.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
   const fileReader = new FileReader();
 
   fileReader.onload = function (event) {
@@ -42,34 +48,22 @@ const handlingPDF = (file) => {
   fileReader.readAsArrayBuffer(file);
 };
 
-const sendFile = () => {
-  const file = fileUploadInput.files[0];
-
-  if (!file) {
+const setCurrentPage = (pageNumber) => {
+  if (!pdf || pageNumber < 1 || pageNumber > pdf.numPages) {
     return;
   }
 
-  handlingPDF(file);
-};
-
-const getToPreviousPage = () => {
-  if (!pdf || currentPage <= 1) {
-    return;
-  }
-
-  currentPage--;
+  currentPage = pageNumber;
   renderPage(currentPage);
   updateButtonsDisability();
 };
 
-const getToNextPage = () => {
-  if (!pdf || currentPage >= pdf.numPages) {
-    return;
-  }
+const onClickButtonPrev = () => {
+  setCurrentPage(currentPage - 1);
+};
 
-  currentPage++;
-  renderPage(currentPage);
-  updateButtonsDisability();
+const onClickButtonNext = () => {
+  setCurrentPage(currentPage + 1);
 };
 
 const updateButtonsDisability = () => {
