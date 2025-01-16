@@ -9,10 +9,10 @@ const nextPageButton = document.getElementById('next-page-button');
 let pdf = null;
 let currentPage = 1;
 
-const renderPage = (pageNumber) => {
+const renderPage = () => {
   //TODO: написать обработку исключений
   pdf
-    .getPage(pageNumber)
+    .getPage(currentPage)
     .then((page) => page.getTextContent())
     .then((textContent) => {
       const pageText = textContent.items.map((item) => item.str).join(' ');
@@ -54,7 +54,7 @@ const setCurrentPage = (pageNumber) => {
   }
 
   currentPage = pageNumber;
-  renderPage(currentPage);
+  renderPage();
   updateButtonsDisability();
 };
 
