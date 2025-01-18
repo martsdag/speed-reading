@@ -10,7 +10,7 @@ let pdf = null;
 let currentPage = 1;
 
 const renderPage = () => {
-  //TODO: написать обработку исключений
+  // TODO: написать обработку исключений
   pdf
     .getPage(currentPage)
     .then((page) => page.getTextContent())

@@ -1,36 +1,47 @@
 <!doctype html>
-<html>
+<html lang="ru">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/public/book-logo.png" />
-    <link rel="stylesheet" type="text/css" href="src/styles.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/public/book-logo.png">
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prosto+One&display=swap"
       rel="stylesheet"
-    />
+      type="text/css"
+      href="src/styles.css"
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    >
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prosto+One&display=swap" rel="stylesheet">
     <title>Speed reading</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   </head>
+
   <body>
     <header class="header">
       <div class="header__container">
-        <img src="/public/book-logo.png" width="30" height="30" alt="book" />
+        <img
+          src="/public/book-logo.png"
+          width="30"
+          height="30"
+          alt="book"
+        >
         <span class="header__title">Speed reading</span>
       </div>
     </header>
     <main>
       <div class="file-upload">
-        <label class="file-upload__label" for="file-upload-input"
-          >Выберите файл для загрузки:
+        <label class="file-upload__label" for="file-upload-input">
+          Выберите файл для загрузки:
           <input
             id="file-upload-input"
             type="file"
             accept=".pdf"
             onchange="onChangeUploadedFile(event)"
-          />
+          >
         </label>
       </div>
       <div id="pdf-text-element"></div>
