@@ -1,21 +1,19 @@
 import globals from 'globals';
 import stylistic from '@stylistic/eslint-plugin';
 import pluginJs from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import eslintPluginHtml from 'eslint-plugin-html';
+import html from '@html-eslint/eslint-plugin';
 
 export default [
   {
     name: 'ignores',
-    ignores: ['dist/', '**/*.css'],
+    ignores: [
+      'dist/',
+      '**/*.css',
+    ],
   },
   {
     name: 'js: recommended',
     ...pluginJs.configs.recommended,
-  },
-  {
-    name: 'prettier: recommended',
-    ...eslintPluginPrettierRecommended,
   },
   {
     name: 'global languageOptions',
@@ -27,18 +25,51 @@ export default [
     name: 'files pattern',
     files: ['**/*.{js,mjs,cjs,css,html}'],
   },
+  stylistic.configs['all-flat'],
   {
     name: 'stylistic',
     plugins: {
-      '@stylistic/js': stylistic,
-      html: eslintPluginHtml,
+      '@stylistic': stylistic,
     },
     rules: {
-      '@stylistic/js/semi': ['error', 'always'],
-      '@stylistic/js/block-spacing': ['error', 'always'],
-      '@stylistic/js/comma-dangle': ['error', 'always-multiline'],
-      '@stylistic/js/no-mixed-operators': 'error',
-      '@stylistic/js/lines-around-comment': [
+      '@stylistic/object-curly-spacing': [
+        'error',
+        'always',
+      ],
+      '@stylistic/padded-blocks': [
+        'error',
+        'never',
+      ],
+      '@stylistic/dot-location': [
+        'error',
+        'property',
+      ],
+      '@stylistic/quotes': [
+        'error',
+        'single',
+      ],
+      '@stylistic/quote-props': [
+        'error',
+        'as-needed',
+      ],
+      '@stylistic/indent': [
+        'error',
+        2,
+      ],
+      '@stylistic/semi': [
+        'error',
+        'always',
+      ],
+      '@stylistic/block-spacing': [
+        'error',
+        'always',
+      ],
+      '@stylistic/comma-dangle': [
+        'error',
+        'always-multiline',
+      ],
+      '@stylistic/no-mixed-operators': 'error',
+      '@stylistic/lines-around-comment': [
         'error',
         {
           beforeBlockComment: false,
@@ -47,18 +78,38 @@ export default [
           allowArrayStart: true,
         },
       ],
-      '@stylistic/js/padding-line-between-statements': [
+      '@stylistic/padding-line-between-statements': [
         'error',
         {
           blankLine: 'always',
           prev: '*',
-          next: ['return', 'export', 'function'],
+          next: [
+            'return',
+            'export',
+            'function',
+          ],
         },
-        { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+        {
+          blankLine: 'always',
+          prev: [
+            'const',
+            'let',
+            'var',
+          ],
+          next: '*',
+        },
         {
           blankLine: 'any',
-          prev: ['const', 'let', 'var'],
-          next: ['const', 'let', 'var'],
+          prev: [
+            'const',
+            'let',
+            'var',
+          ],
+          next: [
+            'const',
+            'let',
+            'var',
+          ],
         },
       ],
     },
@@ -66,26 +117,42 @@ export default [
   {
     name: 'global rules',
     rules: {
-      'no-console': ['error', { allow: ['warn', 'error'] }],
+      'no-console': [
+        'error',
+        {
+          allow: [
+            'warn',
+            'error',
+          ],
+        },
+      ],
+      'no-unused-vars': 'off',
       'no-unexpected-multiline': 'error',
       'no-var': 'error',
       'no-unsafe-optional-chaining': 'error',
-      curly: ['error', 'all'],
-      'arrow-body-style': ['error', 'as-needed'],
+      curly: [
+        'error',
+        'all',
+      ],
+      'arrow-body-style': [
+        'error',
+        'as-needed',
+      ],
       'no-sparse-arrays': 'off',
     },
   },
   {
-    name: 'prettier',
+    // recommended configuration included in the plugin
+    ...html.configs['flat/recommended'],
+    files: ['**/*.html'],
     rules: {
-      'prettier/prettier': [
+      ...html.configs['flat/recommended'].rules,
+      '@html-eslint/indent': [
         'error',
-        {
-          printWidth: 120,
-          singleQuote: true,
-          endOfLine: 'auto',
-        },
+        2,
       ],
+      '@html-eslint/no-multiple-empty-lines': 'error',
+      '@html-eslint/no-trailing-spaces': 'error',
     },
   },
 ];
