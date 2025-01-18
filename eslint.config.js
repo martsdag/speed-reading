@@ -2,12 +2,11 @@ import globals from 'globals';
 import stylistic from '@stylistic/eslint-plugin';
 import pluginJs from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import eslintPluginHtml from 'eslint-plugin-html';
 
 export default [
   {
     name: 'ignores',
-    ignores: ['dist/', '**/*.css'],
+    ignores: ['dist/', '**/*.css', '**/*.html'],
   },
   {
     name: 'js: recommended',
@@ -31,7 +30,6 @@ export default [
     name: 'stylistic',
     plugins: {
       '@stylistic/js': stylistic,
-      html: eslintPluginHtml,
     },
     rules: {
       '@stylistic/js/semi': ['error', 'always'],

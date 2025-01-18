@@ -1,33 +1,33 @@
 :root {
-  --color-zinc-100:#f4f4f5;
-  --color-zinc-200:#e4e4e7;
-  --color-zinc-300:#d4d4d8;
-  --color-zinc-400:#a1a1aa;
-  --color-zinc-500:#71717a;
-  --color-zinc-600:#52525b;
-  --color-zinc-700:#3f3f46;
-  --color-zinc-800:#27272a;
-  --color-zinc-900:#18181b;
-  --color-zinc-950:#09090b;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-200: #e4e4e7;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
 
-  --color-red-100:#fee2e2;
-  --color-red-200:#fecaca;
-  --color-red-300:#fca5a5;
-  --color-red-400:#f87171;
-  --color-red-500:#ef4444;
-  --color-red-600:#dc2626;
-  --color-red-700:#b91c1c;
-  --color-red-800:#991b1b;
-  --color-red-900:#7f1d1d;
-  --color-red-950:#450a0a;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-red-950: #450a0a;
 
-  --color-white:white;
-  --color-black: black; 
+  --color-white: white;
+  --color-black: black;
 }
 
-html, 
+html,
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 300;
   font-size: 1rem;
 }
@@ -36,8 +36,8 @@ body {
   all: unset;
   display: flex;
   background-color: var(--color-zinc-950);
-  border: 0.125rem solid var( --color-zinc-400);
-  color:var(--color-white);
+  border: 0.125rem solid var(--color-zinc-400);
+  color: var(--color-white);
   border-radius: 0.375rem;
   padding: 0.5rem;
   text-align: center;
@@ -47,7 +47,7 @@ body {
   align-items: center;
   transition: background-color 0.3s;
   position: relative;
-  font-family: 'Prosto One', sans-serif;
+  font-family: "Prosto One", sans-serif;
 
   &[disabled] {
     pointer-events: none;
@@ -60,19 +60,19 @@ body {
   }
 
   &:active {
-    border-color:var(--color-zinc-200);
+    border-color: var(--color-zinc-200);
   }
 
   &:focus {
     outline: 1px solid var(--color-zinc-300);
-    box-shadow: 0 0 0,625rem var(--color-zinc-400);
+    box-shadow:0 0 0, 625rem var(--color-zinc-400);
   }
 }
 
 .switch-page {
   display: flex;
   justify-content: center;
-  margin: 1rem 0 0 0 ;
+  margin: 1rem 0 0 0;
   gap: 0.625rem;
 }
 
@@ -89,15 +89,14 @@ body {
   }
 }
 
-
 .header {
   .header__container {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-  
-  .header__title{
+
+  .header__title {
     color: var(--color-zinc-700);
     display: flex;
     font-weight: 900;
