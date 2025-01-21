@@ -9,21 +9,57 @@ const nextPageButton = document.getElementById('next-page-button');
 let pdf = null;
 let currentPage = 1;
 
-// createContextualFragment преобразует строки в DOM елементы
-const createFragment = (string) => new Range().createContextualFragment(string);
+/**
+ * @callback InteractiveFragmentCallback
+ * @param {DocumentFragment} documentFragment
+ * @returns {void}
+ */
 
-const notificationElement = `<div class="notification" id="notification">
-          <button class="button-close" onclick="onClickClose()">
-            <img
-              alt="close-thick"
-              src="/src/assets/icons/close-outline.svg"
-              class="icon"
-            >
-          </button>
-          <button class="button" onclick="onClickContinueReading()">Продолжить чтение</button>
-          <p class="alert__text">Этот файл уже был загружен. Желаете ли продолжить его чтение?</p>
-        </div>
-`;
+/**
+ * Создаёт интерактивный элемент из строки htmlString и добавляет его в ноду appendTo
+ * @param {string} htmlString
+ * @param {HTMLElement=} appendTo
+ * @param {InteractiveFragmentCallback=} interactive
+ */
+const createInteractiveFragment = (htmlString, appendTo = document.body, interactive) => {
+  const documentFragment = new Range().createContextualFragment(htmlString);
+
+  interactive(documentFragment);
+
+  appendTo.appendChild(documentFragment);
+};
+
+const createHasAlreadyReadNotification = () => createInteractiveFragment(
+  `
+<div class="notification" id="notification">
+<button class="button-close">
+<img
+  alt="close-thick"
+  src="/src/assets/icons/close-outline.svg"
+  class="icon"
+>
+</button>
+<button class="button">Продолжить чтение</button>
+<p class="notification__text">Этот файл уже был загружен. Желаете ли продолжить его чтение?</p>
+</div>
+`,
+  document.body,
+  (notificationFragment) => {
+    notificationFragment.querySelector('.button-close')?.addEventListener(
+      'click',
+      () => document.getElementById('notification').remove(),
+    );
+
+    notificationFragment.querySelector('.button')?.addEventListener(
+      'click',
+      () => {
+        document.getElementById('notification').remove();
+
+        setCurrentPage(currentPage);
+      },
+    );
+  },
+);
 
 const renderPage = () => {
   // TODO: написать обработку исключений
@@ -33,6 +69,7 @@ const renderPage = () => {
     .then((textContent) => {
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
+      console.log(`Страница номер: ${currentPage}`);
       pdfTextElement.textContent = pageText;
     });
 };
@@ -44,24 +81,6 @@ const onChangeUploadedFile = (event) => {
   if (!file) {
     return;
   }
-
-  const savedPdfFile = localStorage.getItem('saved-pdf-file');
-
-  if (savedPdfFile) {
-    const { name, size } = JSON.parse(savedPdfFile);
-
-    if (!name === file.name && size === file.size) {
-      return;
-    }
-
-    document.body.append(createFragment(notificationElement));
-  }
-
-  localStorage.setItem(
-    'saved-pdf-file',
-    JSON.stringify({ name: file.name,
-      size: file.size }),
-  );
 
   const fileReader = new FileReader();
 
@@ -109,19 +128,3 @@ const updateButtonsDisability = () => {
   nextPageButton.disabled = currentPage >= pdf.numPages;
 };
 
-const onClickContinueReading = () => {
-  const notification = document.getElementById('notification');
-
-  notification.remove();
-  setCurrentPage(currentPage);
-};
-
-const onClickClose = () => {
-  const notification = document.getElementById('notification');
-
-  if (!notification) {
-    return;
-  }
-
-  notification.remove();
-};
