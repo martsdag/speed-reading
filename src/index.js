@@ -8,6 +8,7 @@ const nextPageButton = document.getElementById('next-page-button');
 
 let pdf = null;
 let currentPage = 1;
+let file;
 
 /**
  * @callback InteractiveFragmentCallback
@@ -54,7 +55,7 @@ const createHasAlreadyReadNotification = () => createInteractiveFragment(
       'click',
       () => {
         document.getElementById('notification').remove();
-
+        // здесь нужно переходить на последнюю прочитанную страницу
         setCurrentPage(currentPage);
       },
     );
@@ -69,14 +70,31 @@ const renderPage = () => {
     .then((textContent) => {
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
-      console.log(`Страница номер: ${currentPage}`);
       pdfTextElement.textContent = pageText;
     });
 };
 
+const savedPdfs = (file, currentPage) => {
+  const pdfs = JSON.parse(localStorage.getItem('pdfs')) || [];
+
+  const savedPdf = {
+    name: file.name,
+    size: file.size,
+    lastPageRead: currentPage,
+  };
+
+  pdfs.push(savedPdf);
+
+  localStorage.setItem(
+    'pdfs',
+    JSON.stringify(pdfs),
+  );
+};
+
 const onChangeUploadedFile = (event) => {
   const input = event.target;
-  const file = input.files?.[0];
+
+  file = input.files?.[0];
 
   if (!file) {
     return;
@@ -95,6 +113,11 @@ const onChangeUploadedFile = (event) => {
       currentPage = 1;
       renderPage(currentPage);
       updateButtonsDisability();
+
+      savedPdfs(
+        file,
+        currentPage,
+      );
     });
   };
 
@@ -109,6 +132,19 @@ const setCurrentPage = (pageNumber) => {
   currentPage = pageNumber;
   renderPage();
   updateButtonsDisability();
+
+  const pdfs = JSON.parse(localStorage.getItem('pdfs')) || [];
+
+  const pdfIndex = pdfs.findIndex((pdf) => pdf.name === file.name && pdf.size === file.size);
+
+  if (pdfIndex !== -1) {
+    pdfs[pdfIndex].lastPageRead = currentPage;
+  }
+
+  localStorage.setItem(
+    'pdfs',
+    JSON.stringify(pdfs),
+  );
 };
 
 const onClickButtonPrev = () => {
@@ -127,4 +163,3 @@ const updateButtonsDisability = () => {
   previousPageButton.disabled = currentPage <= 1;
   nextPageButton.disabled = currentPage >= pdf.numPages;
 };
-
