@@ -2,6 +2,8 @@ const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
+const PDFS_KEY = 'pdfs';
+
 const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
@@ -30,7 +32,7 @@ const createInteractiveFragment = (htmlString, appendTo = document.body, interac
   appendTo.appendChild(documentFragment);
 };
 
-const createHasAlreadyReadNotification = () => createInteractiveFragment(
+const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFragment(
   `
 <div class="notification" id="notification">
 <button class="button-close">
@@ -55,8 +57,7 @@ const createHasAlreadyReadNotification = () => createInteractiveFragment(
       'click',
       () => {
         document.getElementById('notification').remove();
-        // здесь нужно переходить на последнюю прочитанную страницу
-        setCurrentPage(currentPage);
+        setCurrentPage(lastPageRead);
       },
     );
   },
@@ -72,23 +73,6 @@ const renderPage = () => {
 
       pdfTextElement.textContent = pageText;
     });
-};
-
-const savedPdfs = (file, currentPage) => {
-  const pdfs = JSON.parse(localStorage.getItem('pdfs')) || [];
-
-  const savedPdf = {
-    name: file.name,
-    size: file.size,
-    lastPageRead: currentPage,
-  };
-
-  pdfs.push(savedPdf);
-
-  localStorage.setItem(
-    'pdfs',
-    JSON.stringify(pdfs),
-  );
 };
 
 const onChangeUploadedFile = (event) => {
@@ -107,17 +91,21 @@ const onChangeUploadedFile = (event) => {
 
     const loadingTask = pdfjsLib.getDocument({ data: pdfData });
 
-    loadingTask.promise.then((savedPdf) => {
-      pdf = savedPdf;
+    loadingTask.promise.then((pdfLoaded) => {
+      pdf = pdfLoaded;
 
       currentPage = 1;
       renderPage(currentPage);
       updateButtonsDisability();
 
-      savedPdfs(
-        file,
-        currentPage,
-      );
+      const pdfs = JSON.parse(localStorage.getItem(PDFS_KEY)) || [];
+      const maybeLastPageRead = pdfs.find((pdf) => pdf.name === file.name && pdf.size === file.size)?.lastPageRead;
+
+      if (!maybeLastPageRead) {
+        return;
+      }
+
+      createHasAlreadyReadNotification(maybeLastPageRead);
     });
   };
 
@@ -133,16 +121,37 @@ const setCurrentPage = (pageNumber) => {
   renderPage();
   updateButtonsDisability();
 
-  const pdfs = JSON.parse(localStorage.getItem('pdfs')) || [];
-
+  const pdfs = JSON.parse(localStorage.getItem(PDFS_KEY)) || [];
   const pdfIndex = pdfs.findIndex((pdf) => pdf.name === file.name && pdf.size === file.size);
 
-  if (pdfIndex !== -1) {
-    pdfs[pdfIndex].lastPageRead = currentPage;
+  if (pdfIndex === -1 && currentPage > 1) {
+    pdfs.push({
+      name: file.name,
+      size: file.size,
+      lastPageRead: currentPage,
+    });
+  } else {
+    if (currentPage < 2) {
+      pdfs.splice(
+        pdfIndex,
+        1,
+      );
+    } else {
+      const pdf = pdfs[pdfIndex];
+
+      pdfs.splice(
+        pdfIndex,
+        1,
+        {
+          ...pdf,
+          lastPageRead: currentPage,
+        },
+      );
+    }
   }
 
   localStorage.setItem(
-    'pdfs',
+    PDFS_KEY,
     JSON.stringify(pdfs),
   );
 };
