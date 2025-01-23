@@ -143,13 +143,14 @@ body {
   transition: all 0.25s ease-out;
   z-index: 1000;
   top: 0.625rem;
+
+  .notification__text {
+    flex: 1;
+    padding: 0.625rem;
+    margin: 0;
+  }
 }
 
-.notification__text {
-  flex: 1;
-  padding: 0.625rem;
-  margin: 0;
-}
 
 .icon {
   width: 1.5rem;
