@@ -3,14 +3,18 @@ const pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
 const PDFS_KEY = 'pdfs';
+const msPerMinute = 60000;
 
 const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
+const SpeedReadingRangeInput = document.getElementById('speed-reading-range-input');
+const SpeedReadingRangeOutput = document.getElementById('speed-reading-range-output');
 
 let pdf = null;
 let currentPage = 1;
 let file;
+let delay = 100;
 
 /**
  * @callback InteractiveFragmentCallback
@@ -71,8 +75,34 @@ const renderPage = () => {
     .then((textContent) => {
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
-      pdfTextElement.textContent = pageText;
+      const wordsFromPdfTextElementArray = pageText.split(/\s+/);
+
+      let currentWordIndex = 0;
+
+      pdfTextElement.textContent = '';
+
+      const displayNextWord = () => {
+        if (currentWordIndex < wordsFromPdfTextElementArray.length) {
+          pdfTextElement.textContent = wordsFromPdfTextElementArray[currentWordIndex];
+          currentWordIndex++;
+          setTimeout(
+            displayNextWord,
+            delay,
+          );
+        }
+      };
+
+      setTimeout(
+        displayNextWord,
+        delay,
+      );
     });
+};
+
+const onInputChangeSpeedReading = () => {
+  delay = msPerMinute / SpeedReadingRangeInput.value;
+
+  SpeedReadingRangeOutput.value = parseInt(SpeedReadingRangeInput.value);
 };
 
 const onChangeUploadedFile = (event) => {
@@ -95,7 +125,6 @@ const onChangeUploadedFile = (event) => {
       pdf = pdfLoaded;
 
       currentPage = 1;
-      renderPage(currentPage);
       updateButtonsDisability();
 
       const pdfs = JSON.parse(localStorage.getItem(PDFS_KEY)) || [];
@@ -171,4 +200,8 @@ const updateButtonsDisability = () => {
 
   previousPageButton.disabled = currentPage <= 1;
   nextPageButton.disabled = currentPage >= pdf.numPages;
+};
+
+const startSpeedReading = () => {
+  renderPage();
 };

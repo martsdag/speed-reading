@@ -22,7 +22,7 @@
 
   <body>
     <header class="header">
-      <div class="header__container">
+      <div class="header__container _container">
         <img
           src="/public/book-logo.png"
           width="30"
@@ -33,7 +33,7 @@
       </div>
     </header>
     <main>
-      <div class="file-upload">
+      <div class="file-upload _container">
         <label class="file-upload__label" for="file-upload-input">
           Выберите файл для загрузки:
           <input
@@ -43,8 +43,33 @@
             onchange="onChangeUploadedFile(event)"
           >
         </label>
+        <div class="speed-reading">
+          <label class="speed-reading__label" for="speed-reading-range">Скорость чтения:</label>
+          <input
+            type="range"
+            id="speed-reading-range-input"
+            min="100"
+            max="500"
+            value="100"
+            step="20"
+            oninput="onInputChangeSpeedReading()"
+          >
+          <output
+            role="status"
+            for="speed-reading-range"
+            class="speed-reading__output"
+            id="speed-reading-range-output"
+          >
+          </output>
+          <p>слов в минуту</p>
+          <button
+            id="start-reading-button"
+            class="button"
+            onclick="startSpeedReading()"
+          >Начать чтение</button>
+        </div>
       </div>
-      <div id="pdf-text-element"></div>
+      <div id="pdf-text-element" class="_container pdf-text-element"></div>
       <div class="switch-page">
         <button
           id="previous-page-button"
@@ -65,7 +90,7 @@
       </div>
     </main>
     <footer class="footer">
-      <div class="footer__container">Footer</div>
+      <div class="footer__container _container">Footer</div>
     </footer>
     <script src="src/index.js"></script>
   </body>
