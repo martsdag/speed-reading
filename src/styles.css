@@ -32,6 +32,12 @@ body {
   font-size: 1rem;
 }
 
+._container {
+  width: 90%;
+  margin: 0 auto;
+  max-width: 75rem;
+}
+
 .button {
   all: unset;
   display: flex;
@@ -102,9 +108,9 @@ body {
 
 .file-upload {
   display: flex;
-  gap: 1rem;
   align-items: center;
   padding: 1rem;
+  flex-wrap: wrap;
 
   .file-upload__label {
     display: flex;
@@ -161,4 +167,21 @@ body {
   &:hover {
     transform: scale(1.2);
   }
+}
+
+.speed-reading {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdf-text-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  background-color: var(--color-white);
+  border: 0.125rem dashed var(--color-zinc-950);
+  height: 25rem;
 }
