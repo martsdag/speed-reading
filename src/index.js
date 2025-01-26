@@ -10,6 +10,9 @@ const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
 const speedReadingRangeInput = document.getElementById('speed-reading-range-input');
 const speedReadingRangeOutput = document.getElementById('speed-reading-range-output');
+const wordPartStart = document.getElementById('word-part-start');
+const wordPartMiddle = document.getElementById('word-part-middle');
+const wordPartEnd = document.getElementById('word-part-end');
 
 let pdf = null;
 let currentPage = 1;
@@ -81,20 +84,34 @@ const renderPage = () => {
     .then((textContent) => {
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
-      const wordsFromPdfTextElementArray = pageText.replace(
+      const wordsFromPdfTextElement = pageText.replace(
         /(?<=[а-яёa-z])-\s+(?=[а-яёa-z])/gi,
         '',
       ).split(/(?<!-|–)\s+/i);
 
       let currentWordIndex = 0;
 
-      pdfTextElement.textContent = '';
-
       onInputChangeSpeedReading();
 
       const displayNextWord = () => {
-        if (currentWordIndex < wordsFromPdfTextElementArray.length) {
-          pdfTextElement.textContent = wordsFromPdfTextElementArray[currentWordIndex];
+        if (currentWordIndex < wordsFromPdfTextElement.length) {
+          const word = wordsFromPdfTextElement[currentWordIndex];
+
+          const partsOfWord = [
+            word.slice(
+              0,
+              Math.floor(word.length / 2),
+            ),
+            word[Math.floor(word.length / 2)],
+            word.slice(Math.floor(word.length / 2) + 1),
+          ];
+
+          wordPartStart.textContent = partsOfWord[0];
+
+          wordPartMiddle.textContent = partsOfWord[1];
+
+          wordPartEnd.textContent = partsOfWord[2];
+
           currentWordIndex++;
           setTimeout(
             displayNextWord,
