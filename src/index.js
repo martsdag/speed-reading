@@ -75,7 +75,10 @@ const renderPage = () => {
     .then((textContent) => {
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
-      const wordsFromPdfTextElementArray = pageText.split(/\s+/);
+      const wordsFromPdfTextElementArray = pageText.replace(
+        /(?<=[а-яёa-z])-\s+(?=[а-яёa-z])/gi,
+        '',
+      ).split(/(?<!-|–)\s+/i);
 
       let currentWordIndex = 0;
 
