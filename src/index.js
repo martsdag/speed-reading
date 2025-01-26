@@ -8,8 +8,8 @@ const msPerMinute = 60000;
 const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
-const SpeedReadingRangeInput = document.getElementById('speed-reading-range-input');
-const SpeedReadingRangeOutput = document.getElementById('speed-reading-range-output');
+const speedReadingRangeInput = document.getElementById('speed-reading-range-input');
+const speedReadingRangeOutput = document.getElementById('speed-reading-range-output');
 
 let pdf = null;
 let currentPage = 1;
@@ -67,6 +67,12 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
   },
 );
 
+const onInputChangeSpeedReading = () => {
+  delay = msPerMinute / speedReadingRangeInput.value;
+
+  speedReadingRangeOutput.value = parseInt(speedReadingRangeInput.value);
+};
+
 const renderPage = () => {
   // TODO: написать обработку исключений
   pdf
@@ -83,6 +89,8 @@ const renderPage = () => {
       let currentWordIndex = 0;
 
       pdfTextElement.textContent = '';
+
+      onInputChangeSpeedReading();
 
       const displayNextWord = () => {
         if (currentWordIndex < wordsFromPdfTextElementArray.length) {
@@ -102,11 +110,6 @@ const renderPage = () => {
     });
 };
 
-const onInputChangeSpeedReading = () => {
-  delay = msPerMinute / SpeedReadingRangeInput.value;
-
-  SpeedReadingRangeOutput.value = parseInt(SpeedReadingRangeInput.value);
-};
 
 const onChangeUploadedFile = (event) => {
   const input = event.target;
