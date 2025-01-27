@@ -186,23 +186,23 @@ body {
   border: 0.125rem dashed var(--color-zinc-950);
   height: 25rem;
 
-  .pdf-text__word-part {
-    font-size: 2rem;
-    color: var(--color-zinc-500);
-    font-weight: normal;
-  }
+    .pdf-text__word-part {
+      font-size: 2rem;
+      color: var(--color-zinc-500);
+      font-weight: normal;
   
-  .pdf-text__word-part--start {
-    text-align: end;
-  }
+      &:first-child {
+        text-align: end;
+      }
+
+      &:nth-child(2) {
+        color: var(--color-red-600);
+        font-weight: bold;
+        text-align: center;
+      }  
   
-  .pdf-text__word-part--middle {
-    color: var(--color-red-600);
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .pdf-text__word-part--end { 
-    text-align: start;
-  }
+      &:last-child {
+        text-align: start;
+      }
+    }
 }
