@@ -109,7 +109,7 @@ body {
 .file-upload {
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 1rem 0;
   flex-wrap: wrap;
 
   .file-upload__label {
@@ -176,12 +176,33 @@ body {
   justify-content: center;
 }
 
-.pdf-text-element {
-  display: flex;
-  justify-content: center;
+.pdf-text__element {
+  display: grid;
+  grid-template-columns: 1fr min-content 1fr;
+  gap: 0;
   align-items: center;
   font-size: 2rem;
   background-color: var(--color-white);
   border: 0.125rem dashed var(--color-zinc-950);
   height: 25rem;
+
+    .pdf-text__word-part {
+      font-size: 2rem;
+      color: var(--color-zinc-500);
+      font-weight: normal;
+  
+      &:first-child {
+        text-align: end;
+      }
+
+      &:nth-child(2) {
+        color: var(--color-red-600);
+        font-weight: bold;
+        text-align: center;
+      }  
+  
+      &:last-child {
+        text-align: start;
+      }
+    }
 }

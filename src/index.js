@@ -8,8 +8,11 @@ const msPerMinute = 60000;
 const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
-const SpeedReadingRangeInput = document.getElementById('speed-reading-range-input');
-const SpeedReadingRangeOutput = document.getElementById('speed-reading-range-output');
+const speedReadingRangeInput = document.getElementById('speed-reading-range-input');
+const speedReadingRangeOutput = document.getElementById('speed-reading-range-output');
+const wordPartStart = document.getElementById('word-part-start');
+const wordPartMiddle = document.getElementById('word-part-middle');
+const wordPartEnd = document.getElementById('word-part-end');
 
 let pdf = null;
 let currentPage = 1;
@@ -67,6 +70,12 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
   },
 );
 
+const onInputChangeSpeedReading = () => {
+  delay = msPerMinute / speedReadingRangeInput.value;
+
+  speedReadingRangeOutput.value = parseInt(speedReadingRangeInput.value);
+};
+
 const renderPage = () => {
   // TODO: написать обработку исключений
   pdf
@@ -75,15 +84,34 @@ const renderPage = () => {
     .then((textContent) => {
       const pageText = textContent.items.map((item) => item.str).join(' ');
 
-      const wordsFromPdfTextElementArray = pageText.split(/\s+/);
+      const wordsFromPdfTextElement = pageText.replace(
+        /(?<=[а-яёa-z])-\s+(?=[а-яёa-z])/gi,
+        '',
+      ).split(/(?<!-|–)\s+/i);
 
       let currentWordIndex = 0;
 
-      pdfTextElement.textContent = '';
+      onInputChangeSpeedReading();
 
       const displayNextWord = () => {
-        if (currentWordIndex < wordsFromPdfTextElementArray.length) {
-          pdfTextElement.textContent = wordsFromPdfTextElementArray[currentWordIndex];
+        if (currentWordIndex < wordsFromPdfTextElement.length) {
+          const word = wordsFromPdfTextElement[currentWordIndex];
+
+          const partsOfWord = [
+            word.slice(
+              0,
+              Math.floor(word.length / 2),
+            ),
+            word[Math.floor(word.length / 2)],
+            word.slice(Math.floor(word.length / 2) + 1),
+          ];
+
+          wordPartStart.textContent = partsOfWord[0];
+
+          wordPartMiddle.textContent = partsOfWord[1];
+
+          wordPartEnd.textContent = partsOfWord[2];
+
           currentWordIndex++;
           setTimeout(
             displayNextWord,
@@ -99,11 +127,6 @@ const renderPage = () => {
     });
 };
 
-const onInputChangeSpeedReading = () => {
-  delay = msPerMinute / SpeedReadingRangeInput.value;
-
-  SpeedReadingRangeOutput.value = parseInt(SpeedReadingRangeInput.value);
-};
 
 const onChangeUploadedFile = (event) => {
   const input = event.target;
