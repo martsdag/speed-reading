@@ -29,13 +29,30 @@
           height="30"
           alt="book"
         >
-        <span class="header__title">Speed reading</span>
+        <span data-i18n="speedReadingTitle" class="header__title"></span>
+        <div class="header__language-select">
+          <select
+            class="language-selector"
+            id="language-selector"
+            onchange="onChangeSelectLanguage(event)"
+          >
+            <option
+              data-i18n="selectLanguage"
+              disabled
+              value="select-language"
+            >
+            </option>
+            <option value="en">English(EN)</option>
+            <option value="es">Español(ES)</option>
+            <option value="ru">Русский(RU)</option>
+          </select>
+        </div>
       </div>
     </header>
     <main>
       <div class="file-upload _container">
+        <p data-i18n="selectFileToDownload"></p>
         <label class="file-upload__label" for="file-upload-input">
-          Выберите файл для загрузки:
           <input
             id="file-upload-input"
             type="file"
@@ -44,7 +61,12 @@
           >
         </label>
         <div class="speed-reading">
-          <label class="speed-reading__label" for="speed-reading-range">Скорость чтения:</label>
+          <label
+            data-i18n="speedReading"
+            class="speed-reading__label"
+            for="speed-reading-range"
+          >
+          </label>
           <input
             type="range"
             id="speed-reading-range-input"
@@ -61,12 +83,14 @@
             id="speed-reading-range-output"
           >
           </output>
-          <p>слов в минуту</p>
+          <p data-i18n="wordsPerMinute"></p>
           <button
+            data-i18n="startReading"
             id="start-reading-button"
             class="button"
             onclick="startSpeedReading()"
-          >Начать чтение</button>
+          >
+          </button>
         </div>
       </div>
       <div id="pdf-text-element" class="_container pdf-text__element">
@@ -76,20 +100,20 @@
       </div>
       <div class="switch-page">
         <button
+          data-i18n="previousPage"
           id="previous-page-button"
           class="button"
           disabled
           onclick="onClickButtonPrev()"
         >
-          Предыдущая страница
         </button>
         <button
+          data-i18n="nextPage"
           id="next-page-button"
           class="button"
           disabled
           onclick="onClickButtonNext()"
         >
-          Следующая страница
         </button>
       </div>
     </main>

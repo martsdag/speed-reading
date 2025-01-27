@@ -13,11 +13,13 @@ const speedReadingRangeOutput = document.getElementById('speed-reading-range-out
 const wordPartStart = document.getElementById('word-part-start');
 const wordPartMiddle = document.getElementById('word-part-middle');
 const wordPartEnd = document.getElementById('word-part-end');
+const languageSelector = document.getElementById('language-selector');
 
 let pdf = null;
 let currentPage = 1;
-let file;
 let delay = 100;
+let translations = {};
+let file;
 
 /**
  * @callback InteractiveFragmentCallback
@@ -228,3 +230,36 @@ const updateButtonsDisability = () => {
 const startSpeedReading = () => {
   renderPage();
 };
+
+const loadTranslations = async (locale) => {
+  const translationsResponse = await fetch(`./public/languages/${locale}.json`);
+  const translations = await translationsResponse.json();
+
+  const defaultTranslationsResponse = await fetch('../public/languages/en.json');
+  const defaultTranslations = await defaultTranslationsResponse.json();
+
+  return translations || defaultTranslations;
+};
+
+const translatePage = (translations) => {
+  document.querySelectorAll('[data-i18n]').forEach((element) => {
+    const key = element.getAttribute('data-i18n');
+
+    if (translations[key]) {
+      element.textContent = translations[key];
+    }
+  });
+};
+
+const setLanguage = async (locale) => {
+  const translations = await loadTranslations(locale);
+
+  translatePage(translations);
+  document.documentElement.lang = locale;
+};
+
+const onChangeSelectLanguage = () => {
+  setLanguage(languageSelector.value);
+};
+
+setLanguage('en');
