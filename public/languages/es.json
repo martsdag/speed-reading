@@ -6,5 +6,6 @@
   "startReading": "Empieza a leer",
   "previousPage": "Página anterior",
   "nextPage": "Página siguiente",
-  "selectLanguage": "Seleccione un idioma"
+  "selectLanguage": "Seleccione un idioma",
+  "stopReading": "Deja de leer"
 }

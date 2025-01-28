@@ -90,11 +90,19 @@
               <p data-i18n="wordsPerMinute" class="speed-reading__description"></p>
             </div>
           </div>
+          <div class="speed-reading__controls"></div>
           <button
             data-i18n="startReading"
             id="start-reading-button"
             class="button"
-            onclick="startSpeedReading()"
+            onclick="onClickStartSpeedReading()"
+          >
+          </button>
+          <button
+            data-i18n="stopReading"
+            id="stop-reading-button"
+            class="button"
+            onclick="onClickStopSpeedReading()"
           >
           </button>
         </div>

@@ -16,6 +16,7 @@ const wordPartEnd = document.getElementById('word-part-end');
 const languageSelector = document.getElementById('language-selector');
 
 let pdf = null;
+let readingTimeoutId = null;
 let currentPage = 1;
 let delay = 100;
 let translations = {};
@@ -96,33 +97,34 @@ const renderPage = () => {
       onInputChangeSpeedReading();
 
       const displayNextWord = () => {
-        if (currentWordIndex < wordsFromPdfTextElement.length) {
-          const word = wordsFromPdfTextElement[currentWordIndex];
-
-          const partsOfWord = [
-            word.slice(
-              0,
-              Math.floor(word.length / 2),
-            ),
-            word[Math.floor(word.length / 2)],
-            word.slice(Math.floor(word.length / 2) + 1),
-          ];
-
-          wordPartStart.textContent = partsOfWord[0];
-
-          wordPartMiddle.textContent = partsOfWord[1];
-
-          wordPartEnd.textContent = partsOfWord[2];
-
-          currentWordIndex++;
-          setTimeout(
-            displayNextWord,
-            delay,
-          );
+        if (currentWordIndex >= wordsFromPdfTextElement.length) {
+          return;
         }
+        const word = wordsFromPdfTextElement[currentWordIndex];
+
+        const partsOfWord = [
+          word.slice(
+            0,
+            Math.floor(word.length / 2),
+          ),
+          word[Math.floor(word.length / 2)],
+          word.slice(Math.floor(word.length / 2) + 1),
+        ];
+
+        wordPartStart.textContent = partsOfWord[0];
+
+        wordPartMiddle.textContent = partsOfWord[1];
+
+        wordPartEnd.textContent = partsOfWord[2];
+
+        currentWordIndex++;
+        readingTimeoutId = setTimeout(
+          displayNextWord,
+          delay,
+        );
       };
 
-      setTimeout(
+      readingTimeoutId = setTimeout(
         displayNextWord,
         delay,
       );
@@ -211,10 +213,12 @@ const setCurrentPage = (pageNumber) => {
 };
 
 const onClickButtonPrev = () => {
+  stopSpeedReading();
   setCurrentPage(currentPage - 1);
 };
 
 const onClickButtonNext = () => {
+  stopSpeedReading();
   setCurrentPage(currentPage + 1);
 };
 
@@ -227,8 +231,21 @@ const updateButtonsDisability = () => {
   nextPageButton.disabled = currentPage >= pdf.numPages;
 };
 
-const startSpeedReading = () => {
+const onClickStartSpeedReading = () => {
   renderPage();
+};
+
+const stopSpeedReading = () => {
+  if (!readingTimeoutId) {
+    return;
+  }
+
+  clearTimeout(readingTimeoutId);
+  readingTimeoutId = null;
+};
+
+const onClickStopSpeedReading = () => {
+  stopSpeedReading();
 };
 
 const loadTranslations = async (locale) => {
