@@ -111,6 +111,8 @@ body {
   align-items: center;
   padding: 1rem 0;
   flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: start;
 
   .file-upload__label {
     display: flex;
@@ -130,6 +132,11 @@ body {
     color: var(--color-zinc-700);
     display: flex;
     font-weight: 900;
+  }
+
+  .header__language-select {
+    margin-inline-start: auto;
+    display: flex;
   }
 }
 
