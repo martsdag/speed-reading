@@ -119,9 +119,21 @@ body {
     gap: 1rem;
     align-items: center;
   }
+
+  .file-upload__description {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
 }
 
 .header {
+  border-bottom: 1px solid var(--color-zinc-200);
+  background-color: var(--color-white);
+  padding: 0 0 5px;
+
   .header__container {
     display: flex;
     gap: 1rem;
@@ -134,7 +146,7 @@ body {
     font-weight: 900;
   }
 
-  .header__language-select {
+  .header__language-selector {
     margin-inline-start: auto;
     display: flex;
   }
@@ -177,10 +189,32 @@ body {
 }
 
 .speed-reading {
+  white-space: nowrap;
   display: flex;
-  gap: 1rem;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  .speed-reading__range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .speed-reading__range-output {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .speed-reading__label {
+    white-space: nowrap;
+  }
+
+  .speed-reading__description{ 
+    white-space: nowrap;
+  }
 }
 
 .pdf-text__element {
