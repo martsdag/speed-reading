@@ -52,7 +52,7 @@
     <main class="layout _container">
       <div class="file-upload">
         <div class="file-upload__description">
-          <p data-i18n="selectFileToDownload"></p>
+          <p class="file-upload__text" data-i18n="selectFileToDownload"></p>
           <label class="file-upload__label" for="file-upload-input">
             <input
               id="file-upload-input"
@@ -86,26 +86,23 @@
                 class="speed-reading__output"
                 id="speed-reading-range-output"
               >
+                100
               </output>
               <p data-i18n="wordsPerMinute" class="speed-reading__description"></p>
             </div>
           </div>
-          <div class="speed-reading__controls"></div>
-          <button
-            data-i18n="startReading"
-            id="start-reading-button"
-            class="button"
-            onclick="onClickStartSpeedReading()"
-          >
-          </button>
-          <button
-            data-i18n="stopReading"
-            id="stop-reading-button"
-            class="button"
-            onclick="onClickStopSpeedReading()"
-          >
-          </button>
         </div>
+      </div>
+      <div class="speed-reading__control-button">
+        <button class="button-control">
+          <img
+            id="play-pause-icon"
+            alt="play"
+            src="/src/assets/icons/play.svg"
+            class="icon icon_size_lg"
+            onclick="onClickStartStopSpeedReading()"
+          >
+        </button>
       </div>
       <div id="pdf-text-element" class="pdf-text__element">
         <span class="pdf-text__word-part" id="word-part-start"></span>

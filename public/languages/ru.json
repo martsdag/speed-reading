@@ -1,11 +1,11 @@
 {
   "speedReadingTitle": "Скорочтение",
   "selectFileToDownload": "Выберите файл для загрузки:",
-  "speedReading": "Скорость чтения",
+  "speedReading": "Скорость чтения:",
   "wordsPerMinute": "слов в минуту",
-  "startReading": "Начать чтение",
   "previousPage": "Предыдущая страница",
   "nextPage": "Следующая страница",
   "selectLanguage": "Выберите язык",
-  "stopReading": "Прекратить чтение"
+  "continueReading": "Продолжить чтение",
+  "fileHasAlreadyBeenUploaded": "Этот файл уже был загружен. Желаете ли продолжить его чтение?"
 }

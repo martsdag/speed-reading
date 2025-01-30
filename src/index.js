@@ -14,10 +14,12 @@ const wordPartStart = document.getElementById('word-part-start');
 const wordPartMiddle = document.getElementById('word-part-middle');
 const wordPartEnd = document.getElementById('word-part-end');
 const languageSelector = document.getElementById('language-selector');
+const playPauseIcon = document.getElementById('play-pause-icon');
 
 let pdf = null;
 let readingTimeoutId = null;
 let currentPage = 1;
+let currentWordIndex = 0;
 let delay = 100;
 let translations = {};
 let file;
@@ -47,13 +49,13 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
 <div class="notification" id="notification">
 <button class="button-close">
 <img
-  alt="close-thick"
+  alt="close-outline"
   src="/src/assets/icons/close-outline.svg"
   class="icon"
 >
 </button>
-<button class="button">Продолжить чтение</button>
-<p class="notification__text">Этот файл уже был загружен. Желаете ли продолжить его чтение?</p>
+<button data-i18n="continueReading" class="button">Continue reading</button>
+<p data-i18n="fileHasAlreadyBeenUploaded" class="notification__text">This file has already been uploaded. Would you like to continue reading it?</p>
 </div>
 `,
   document.body,
@@ -92,8 +94,6 @@ const renderPage = () => {
         '',
       ).split(/(?<!-|–)\s+/i);
 
-      let currentWordIndex = 0;
-
       onInputChangeSpeedReading();
 
       const displayNextWord = () => {
@@ -130,7 +130,6 @@ const renderPage = () => {
       );
     });
 };
-
 
 const onChangeUploadedFile = (event) => {
   const input = event.target;
@@ -174,7 +173,6 @@ const setCurrentPage = (pageNumber) => {
   }
 
   currentPage = pageNumber;
-  renderPage();
   updateButtonsDisability();
 
   const pdfs = JSON.parse(localStorage.getItem(PDFS_KEY)) || [];
@@ -212,13 +210,23 @@ const setCurrentPage = (pageNumber) => {
   );
 };
 
+const clearWordDisplay = () => {
+  wordPartStart.textContent = '';
+  wordPartMiddle.textContent = '';
+  wordPartEnd.textContent = '';
+};
+
 const onClickButtonPrev = () => {
-  stopSpeedReading();
+  onClickStartStopSpeedReading();
+  currentWordIndex = 0;
+  clearWordDisplay();
   setCurrentPage(currentPage - 1);
 };
 
 const onClickButtonNext = () => {
-  stopSpeedReading();
+  onClickStartStopSpeedReading();
+  currentWordIndex = 0;
+  clearWordDisplay();
   setCurrentPage(currentPage + 1);
 };
 
@@ -231,21 +239,15 @@ const updateButtonsDisability = () => {
   nextPageButton.disabled = currentPage >= pdf.numPages;
 };
 
-const onClickStartSpeedReading = () => {
-  renderPage();
-};
-
-const stopSpeedReading = () => {
-  if (!readingTimeoutId) {
-    return;
+const onClickStartStopSpeedReading = () => {
+  if (readingTimeoutId) {
+    clearTimeout(readingTimeoutId);
+    readingTimeoutId = null;
+    playPauseIcon.src = '/src/assets/icons/play.svg';
+  } else {
+    renderPage();
+    playPauseIcon.src = '/src/assets/icons/pause.svg';
   }
-
-  clearTimeout(readingTimeoutId);
-  readingTimeoutId = null;
-};
-
-const onClickStopSpeedReading = () => {
-  stopSpeedReading();
 };
 
 const loadTranslations = async (locale) => {
