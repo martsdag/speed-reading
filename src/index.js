@@ -3,7 +3,7 @@ const pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
 const PDFS_KEY = 'pdfs';
-const msPerMinute = 60000;
+const MS_PER_MINUTE = 60000;
 
 const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
@@ -22,6 +22,7 @@ let currentPage = 1;
 let currentWordIndex = 0;
 let delay = 100;
 let translations = {};
+let pageText = '';
 let file;
 
 /**
@@ -75,60 +76,106 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
   },
 );
 
+const createLoadFileWarningNotification = () => {
+  const warningNotificationId = `warning-notification-${Date.now()}`;
+
+  createInteractiveFragment(
+    `
+<div class="warning-notification" id="${warningNotificationId}">
+<button class="button-close">
+<img
+  alt="close-outline"
+  src="/src/assets/icons/close-outline.svg"
+  class="icon"
+>
+</button>
+<p data-i18n="downloadTheFileToStartSpeedReading" class="warning-notification__text">Download the file to start speed reading</p>
+</div>
+`,
+    document.body,
+    (warningNotificationFragment) => {
+      warningNotificationFragment.querySelector('.button-close')?.addEventListener(
+        'click',
+        () => document.getElementById(warningNotificationId).remove(),
+      );
+    },
+    setTimeout(
+      () => {
+        document.getElementById(warningNotificationId).remove();
+      },
+      7000,
+    ),
+  );
+};
+
+
 const onInputChangeSpeedReading = () => {
-  delay = msPerMinute / speedReadingRangeInput.value;
+  delay = MS_PER_MINUTE / speedReadingRangeInput.value;
 
   speedReadingRangeOutput.value = parseInt(speedReadingRangeInput.value);
 };
 
-const renderPage = () => {
-  // TODO: написать обработку исключений
-  pdf
-    .getPage(currentPage)
-    .then((page) => page.getTextContent())
-    .then((textContent) => {
-      const pageText = textContent.items.map((item) => item.str).join(' ');
+const renderPage = async () => {
+  try {
+    const page = await pdf.getPage(currentPage);
+    const textContent = await page.getTextContent();
 
-      const wordsFromPdfTextElement = pageText.replace(
-        /(?<=[а-яёa-z])-\s+(?=[а-яёa-z])/gi,
-        '',
-      ).split(/(?<!-|–)\s+/i);
+    pageText = textContent.items.map((item) => item.str).join(' ');
+  } catch (error) {
+    console.error(
+      'Error while extracting text from PDF:',
+      error,
+    );
 
-      onInputChangeSpeedReading();
+    return;
+  }
 
-      const displayNextWord = () => {
-        if (currentWordIndex >= wordsFromPdfTextElement.length) {
-          return;
-        }
-        const word = wordsFromPdfTextElement[currentWordIndex];
+  if (!pageText) {
+    console.warn('Page text is empty, skipping processing.');
 
-        const partsOfWord = [
-          word.slice(
-            0,
-            Math.floor(word.length / 2),
-          ),
-          word[Math.floor(word.length / 2)],
-          word.slice(Math.floor(word.length / 2) + 1),
-        ];
+    return;
+  }
 
-        wordPartStart.textContent = partsOfWord[0];
+  const wordsFromPdfTextElement = pageText
+    .replace(
+      /(?<=[а-яёa-z])-\s+(?=[а-яёa-z])/gi,
+      '',
+    )
+    .split(/(?<!-|–)\s+/i);
 
-        wordPartMiddle.textContent = partsOfWord[1];
+  onInputChangeSpeedReading();
 
-        wordPartEnd.textContent = partsOfWord[2];
+  const displayNextWord = () => {
+    if (currentWordIndex >= wordsFromPdfTextElement.length) {
+      return;
+    }
 
-        currentWordIndex++;
-        readingTimeoutId = setTimeout(
-          displayNextWord,
-          delay,
-        );
-      };
+    const word = wordsFromPdfTextElement[currentWordIndex];
 
-      readingTimeoutId = setTimeout(
-        displayNextWord,
-        delay,
-      );
-    });
+    const partsOfWord = [
+      word.slice(
+        0,
+        Math.floor(word.length / 2),
+      ),
+      word[Math.floor(word.length / 2)],
+      word.slice(Math.floor(word.length / 2) + 1),
+    ];
+
+    wordPartStart.textContent = partsOfWord[0];
+    wordPartMiddle.textContent = partsOfWord[1];
+    wordPartEnd.textContent = partsOfWord[2];
+
+    currentWordIndex++;
+    readingTimeoutId = setTimeout(
+      displayNextWord,
+      delay,
+    );
+  };
+
+  readingTimeoutId = setTimeout(
+    displayNextWord,
+    delay,
+  );
 };
 
 const onChangeUploadedFile = (event) => {
@@ -240,6 +287,12 @@ const updateButtonsDisability = () => {
 };
 
 const onClickStartStopSpeedReading = () => {
+  if (!pdf) {
+    createLoadFileWarningNotification();
+
+    return;
+  }
+
   if (readingTimeoutId) {
     clearTimeout(readingTimeoutId);
     readingTimeoutId = null;

@@ -7,5 +7,6 @@
   "nextPage": "Next page",
   "selectLanguage": "Select a language",
   "continueReading": "Continue reading",
-  "fileHasAlreadyBeenUploaded": "This file has already been uploaded. Would you like to continue reading it?"
+  "fileHasAlreadyBeenUploaded": "This file has already been uploaded. Would you like to continue reading it?",
+  "downloadTheFileToStartSpeedReading": "Download the file to start reading"
 }

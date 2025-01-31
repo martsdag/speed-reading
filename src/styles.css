@@ -211,6 +211,30 @@ body {
   }
 }
 
+.warning-notification {
+  display: flex;
+  position: fixed;
+  flex-direction: row-reverse;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-zinc-200);
+  color: var(--color-zinc-900); 
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-red-500);
+  padding: 1rem 1.25rem;
+  box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
+  transition: all 0.25s ease-out;
+  z-index: 1000;
+  bottom: 0.625rem;
+  right: 0.625rem;
+
+  .warning-notification__text {
+    flex: 1;
+    padding: 0.625rem;
+    margin: 0;
+  }
+}
 
 .icon {
   width: 1.5rem;
