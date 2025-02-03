@@ -15,6 +15,7 @@ const wordPartMiddle = document.getElementById('word-part-middle');
 const wordPartEnd = document.getElementById('word-part-end');
 const languageSelector = document.getElementById('language-selector');
 const playPauseIcon = document.getElementById('play-pause-icon');
+const playPauseButton = document.getElementById('play-pause-button');
 
 let pdf = null;
 let readingTimeoutId = null;
@@ -75,39 +76,6 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
     );
   },
 );
-
-const createLoadFileWarningNotification = () => {
-  const warningNotificationId = `warning-notification-${Date.now()}`;
-
-  createInteractiveFragment(
-    `
-<div class="warning-notification" id="${warningNotificationId}">
-<button class="button-close">
-<img
-  alt="close-outline"
-  src="/src/assets/icons/close-outline.svg"
-  class="icon"
->
-</button>
-<p data-i18n="downloadTheFileToStartSpeedReading" class="warning-notification__text">Download the file to start speed reading</p>
-</div>
-`,
-    document.body,
-    (warningNotificationFragment) => {
-      warningNotificationFragment.querySelector('.button-close')?.addEventListener(
-        'click',
-        () => document.getElementById(warningNotificationId).remove(),
-      );
-    },
-    setTimeout(
-      () => {
-        document.getElementById(warningNotificationId).remove();
-      },
-      7000,
-    ),
-  );
-};
-
 
 const onInputChangeSpeedReading = () => {
   delay = MS_PER_MINUTE / speedReadingRangeInput.value;
@@ -208,6 +176,7 @@ const onChangeUploadedFile = (event) => {
       }
 
       createHasAlreadyReadNotification(maybeLastPageRead);
+      playPauseButton.style.display = 'flex';
     });
   };
 
@@ -287,12 +256,6 @@ const updateButtonsDisability = () => {
 };
 
 const onClickStartStopSpeedReading = () => {
-  if (!pdf) {
-    createLoadFileWarningNotification();
-
-    return;
-  }
-
   if (readingTimeoutId) {
     clearTimeout(readingTimeoutId);
     readingTimeoutId = null;
