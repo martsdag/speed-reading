@@ -7,5 +7,6 @@
   "nextPage": "Página siguiente",
   "selectLanguage": "Seleccione un idioma",
   "continueReading": "Seguir leyendo",
-  "fileHasAlreadyBeenUploaded": "Este archivo ya ha sido subido. ¿Te gustaría seguir leyéndolo?"
+  "fileHasAlreadyBeenUploaded": "Este archivo ya ha sido subido. ¿Te gustaría seguir leyéndolo?",
+  "wordsOutOf": "palabras de"
 }

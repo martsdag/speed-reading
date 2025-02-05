@@ -63,11 +63,11 @@
           </label>
         </div>
         <div class="speed-reading">
-          <div class="speed-reading__range">
+          <div class="speed-reading__controls">
             <label
               data-i18n="speedReading"
               class="speed-reading__label"
-              for="speed-reading-range"
+              for="speed-reading-range-input"
             >
             </label>
             <input
@@ -77,17 +77,18 @@
               max="500"
               value="100"
               step="20"
-              oninput="onInputChangeSpeedReading()"
+              oninput="onInputRangeChangeSpeedReading()"
             >
-            <div class="speed-reading__range-output">
-              <output
-                role="status"
-                for="speed-reading-range"
-                class="speed-reading__output"
-                id="speed-reading-range-output"
+            <div class="speed-reading__input-group">
+              <input
+                type="number"
+                id="speed-reading-number-input"
+                min="100"
+                max="500"
+                value="100"
+                step="20"
+                onblur="onBlurNumberChangeSpeedReading()"
               >
-                100
-              </output>
               <p data-i18n="wordsPerMinute" class="speed-reading__description"></p>
             </div>
           </div>
@@ -108,6 +109,11 @@
         <span class="pdf-text__word-part" id="word-part-start"></span>
         <span class="pdf-text__word-part" id="word-part-middle"></span>
         <span class="pdf-text__word-part" id="word-part-end"></span>
+      </div>
+      <div id="words-counter" class="words-counter">
+        <span id="word-shown"></span>
+        <p data-i18n="wordsOutOf" class="words-counter__description"></p>
+        <span id="total-words-shown"></span>
       </div>
       <div class="switch-page">
         <button

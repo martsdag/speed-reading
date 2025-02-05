@@ -9,13 +9,16 @@ const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
 const speedReadingRangeInput = document.getElementById('speed-reading-range-input');
-const speedReadingRangeOutput = document.getElementById('speed-reading-range-output');
+const speedReadingNumberInput = document.getElementById('speed-reading-number-input');
 const wordPartStart = document.getElementById('word-part-start');
 const wordPartMiddle = document.getElementById('word-part-middle');
 const wordPartEnd = document.getElementById('word-part-end');
 const languageSelector = document.getElementById('language-selector');
 const playPauseIcon = document.getElementById('play-pause-icon');
 const playPauseButton = document.getElementById('play-pause-button');
+const wordShown = document.getElementById('word-shown');
+const totalWordsShown = document.getElementById('total-words-shown');
+const wordsCounter = document.getElementById('words-counter');
 
 let pdf = null;
 let readingTimeoutId = null;
@@ -77,10 +80,25 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
   },
 );
 
-const onInputChangeSpeedReading = () => {
+const onInputRangeChangeSpeedReading = () => {
   delay = MS_PER_MINUTE / speedReadingRangeInput.value;
 
-  speedReadingRangeOutput.value = parseInt(speedReadingRangeInput.value);
+  speedReadingNumberInput.value = speedReadingRangeInput.value;
+};
+
+const onBlurNumberChangeSpeedReading = () => {
+  delay = MS_PER_MINUTE / speedReadingRangeInput.value;
+
+  speedReadingRangeInput.value = speedReadingNumberInput.value;
+
+  if (Number(speedReadingNumberInput.value) > speedReadingNumberInput.getAttribute('max')) {
+    speedReadingNumberInput.value = speedReadingNumberInput.getAttribute('max');
+  }
+
+  speedReadingNumberInput.value = speedReadingNumberInput.value.replace(
+    /[^0-9]/g,
+    '',
+  );
 };
 
 const renderPage = async () => {
@@ -111,7 +129,8 @@ const renderPage = async () => {
     )
     .split(/(?<!-|–)\s+/i);
 
-  onInputChangeSpeedReading();
+  onInputRangeChangeSpeedReading();
+  onBlurNumberChangeSpeedReading();
 
   const displayNextWord = () => {
     if (currentWordIndex >= wordsFromPdfTextElement.length) {
@@ -119,6 +138,12 @@ const renderPage = async () => {
     }
 
     const word = wordsFromPdfTextElement[currentWordIndex];
+
+    const wordNumber = currentWordIndex + 1;
+    const lastWordNumber = wordsFromPdfTextElement.length;
+
+    wordShown.textContent = wordNumber;
+    totalWordsShown.textContent = lastWordNumber;
 
     const partsOfWord = [
       word.slice(
@@ -155,6 +180,9 @@ const onChangeUploadedFile = (event) => {
     return;
   }
 
+  playPauseButton.style.display = 'flex';
+  wordsCounter.style.display = 'flex';
+
   const fileReader = new FileReader();
 
   fileReader.onload = function (event) {
@@ -176,7 +204,6 @@ const onChangeUploadedFile = (event) => {
       }
 
       createHasAlreadyReadNotification(maybeLastPageRead);
-      playPauseButton.style.display = 'flex';
     });
   };
 

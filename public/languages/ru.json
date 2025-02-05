@@ -7,5 +7,6 @@
   "nextPage": "Следующая страница",
   "selectLanguage": "Выберите язык",
   "continueReading": "Продолжить чтение",
-  "fileHasAlreadyBeenUploaded": "Этот файл уже был загружен. Желаете ли продолжить его чтение?"
+  "fileHasAlreadyBeenUploaded": "Этот файл уже был загружен. Желаете ли продолжить его чтение?",
+  "wordsOutOf": "слов из"
 }

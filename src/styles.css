@@ -240,20 +240,16 @@ body {
   gap: 0.5rem;
   flex-wrap: wrap;
 
-  .speed-reading__range {
+  .speed-reading__controls {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
 
-  .speed-reading__range-output {
+  .speed-reading__input-group {
     position: sticky;
     left: 5%;
-
-    .speed-reading__output {
-      padding-left: 1rem;
-    }
   }
 
   .speed-reading__label {
@@ -294,4 +290,15 @@ body {
         text-align: start;
       }
     }
+}
+
+.words-counter {
+display: none;
+justify-content: center;
+align-items: center;
+gap: 0.5rem;
+
+ .words-counter__description{
+  all: unset;
+ }
 }
