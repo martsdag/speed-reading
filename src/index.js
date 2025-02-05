@@ -134,6 +134,8 @@ const renderPage = async () => {
 
   const displayNextWord = () => {
     if (currentWordIndex >= wordsFromPdfTextElement.length) {
+      playPauseIcon.src = '/src/assets/icons/play.svg';
+
       return;
     }
 
