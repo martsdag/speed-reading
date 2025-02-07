@@ -94,6 +94,16 @@
           </div>
         </div>
       </div>
+      <div id="words-counter" class="words-counter">
+        <span id="word-shown"></span>
+        <p data-i18n="wordsOutOf" class="words-counter__description"></p>
+        <span id="total-words-shown"></span>
+      </div>
+      <div id="pdf-text-element" class="pdf-text__element">
+        <span class="pdf-text__word-part" id="word-part-start"></span>
+        <span class="pdf-text__word-part" id="word-part-middle"></span>
+        <span class="pdf-text__word-part" id="word-part-end"></span>
+      </div>
       <div class="speed-reading__control-button">
         <button class="play-pause-button" id="play-pause-button">
           <img
@@ -104,16 +114,6 @@
             onclick="onClickStartStopSpeedReading()"
           >
         </button>
-      </div>
-      <div id="pdf-text-element" class="pdf-text__element">
-        <span class="pdf-text__word-part" id="word-part-start"></span>
-        <span class="pdf-text__word-part" id="word-part-middle"></span>
-        <span class="pdf-text__word-part" id="word-part-end"></span>
-      </div>
-      <div id="words-counter" class="words-counter">
-        <span id="word-shown"></span>
-        <p data-i18n="wordsOutOf" class="words-counter__description"></p>
-        <span id="total-words-shown"></span>
       </div>
       <div class="switch-page">
         <button
