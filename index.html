@@ -30,7 +30,7 @@
           alt="book"
         >
         <span data-i18n="speedReadingTitle" class="header__title"></span>
-        <div class="header__language-select">
+        <div class="header__language-selector">
           <select
             class="language-selector"
             id="language-selector"
@@ -49,54 +49,71 @@
         </div>
       </div>
     </header>
-    <main>
-      <div class="file-upload _container">
-        <p data-i18n="selectFileToDownload"></p>
-        <label class="file-upload__label" for="file-upload-input">
-          <input
-            id="file-upload-input"
-            type="file"
-            accept=".pdf"
-            onchange="onChangeUploadedFile(event)"
-          >
-        </label>
-        <div class="speed-reading">
-          <label
-            data-i18n="speedReading"
-            class="speed-reading__label"
-            for="speed-reading-range"
-          >
+    <main class="layout _container">
+      <div class="file-upload">
+        <div class="file-upload__description">
+          <p class="file-upload__text" data-i18n="selectFileToDownload"></p>
+          <label class="file-upload__label" for="file-upload-input">
+            <input
+              id="file-upload-input"
+              type="file"
+              accept=".pdf"
+              onchange="onChangeUploadedFile(event)"
+            >
           </label>
-          <input
-            type="range"
-            id="speed-reading-range-input"
-            min="100"
-            max="500"
-            value="100"
-            step="20"
-            oninput="onInputChangeSpeedReading()"
-          >
-          <output
-            role="status"
-            for="speed-reading-range"
-            class="speed-reading__output"
-            id="speed-reading-range-output"
-          >
-          </output>
-          <p data-i18n="wordsPerMinute"></p>
-          <button
-            data-i18n="startReading"
-            id="start-reading-button"
-            class="button"
-            onclick="startSpeedReading()"
-          >
-          </button>
+        </div>
+        <div class="speed-reading">
+          <div class="speed-reading__controls">
+            <label
+              data-i18n="speedReading"
+              class="speed-reading__label"
+              for="speed-reading-range-input"
+            >
+            </label>
+            <input
+              type="range"
+              id="speed-reading-range-input"
+              min="100"
+              max="500"
+              value="100"
+              step="20"
+              oninput="onInputRangeChangeSpeedReading()"
+            >
+            <div class="speed-reading__input-group">
+              <input
+                type="number"
+                id="speed-reading-number-input"
+                min="100"
+                max="500"
+                value="100"
+                step="20"
+                onblur="onBlurNumberChangeSpeedReading()"
+              >
+              <p data-i18n="wordsPerMinute" class="speed-reading__description"></p>
+            </div>
+          </div>
         </div>
       </div>
-      <div id="pdf-text-element" class="_container pdf-text__element">
+      <div id="words-counter" class="words-counter">
+        <span id="word-shown"></span>
+        <p data-i18n="wordsOutOf" class="words-counter__description"></p>
+        <span id="total-words-shown"></span>
+      </div>
+      <div id="pdf-text-element" class="pdf-text__element">
         <span class="pdf-text__word-part" id="word-part-start"></span>
         <span class="pdf-text__word-part" id="word-part-middle"></span>
         <span class="pdf-text__word-part" id="word-part-end"></span>
+      </div>
+      <div class="speed-reading__control-button">
+        <button class="play-pause-button" id="play-pause-button">
+          <img
+            id="play-pause-icon"
+            alt="play"
+            src="/src/assets/icons/play.svg"
+            class="icon icon_size_lg"
+            onclick="onClickStartStopSpeedReading()"
+          >
+        </button>
       </div>
       <div class="switch-page">
         <button
@@ -118,7 +135,7 @@
       </div>
     </main>
     <footer class="footer">
-      <div class="footer__container _container">Footer</div>
+      <div class="footer__container _container"></div>
     </footer>
     <script src="src/index.js"></script>
   </body>

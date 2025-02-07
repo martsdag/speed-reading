@@ -3,8 +3,10 @@
   "selectFileToDownload": "Select the file to download:",
   "speedReading": "Speed reading:",
   "wordsPerMinute": "words per minute",
-  "startReading": "Start reading",
   "previousPage": "Previous page",
   "nextPage": "Next page",
-  "selectLanguage": "Select a language"
+  "selectLanguage": "Select a language",
+  "continueReading": "Continue reading",
+  "fileHasAlreadyBeenUploaded": "This file has already been uploaded. Would you like to continue reading it?",
+  "wordsOutOf": "words out of"
 }

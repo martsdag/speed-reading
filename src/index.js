@@ -3,22 +3,30 @@ const pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
 const PDFS_KEY = 'pdfs';
-const msPerMinute = 60000;
+const MS_PER_MINUTE = 60000;
 
 const pdfTextElement = document.getElementById('pdf-text-element');
 const previousPageButton = document.getElementById('previous-page-button');
 const nextPageButton = document.getElementById('next-page-button');
 const speedReadingRangeInput = document.getElementById('speed-reading-range-input');
-const speedReadingRangeOutput = document.getElementById('speed-reading-range-output');
+const speedReadingNumberInput = document.getElementById('speed-reading-number-input');
 const wordPartStart = document.getElementById('word-part-start');
 const wordPartMiddle = document.getElementById('word-part-middle');
 const wordPartEnd = document.getElementById('word-part-end');
 const languageSelector = document.getElementById('language-selector');
+const playPauseIcon = document.getElementById('play-pause-icon');
+const playPauseButton = document.getElementById('play-pause-button');
+const wordShown = document.getElementById('word-shown');
+const totalWordsShown = document.getElementById('total-words-shown');
+const wordsCounter = document.getElementById('words-counter');
 
 let pdf = null;
+let readingTimeoutId = null;
 let currentPage = 1;
+let currentWordIndex = 0;
 let delay = 100;
 let translations = {};
+let pageText = '';
 let file;
 
 /**
@@ -46,13 +54,13 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
 <div class="notification" id="notification">
 <button class="button-close">
 <img
-  alt="close-thick"
+  alt="close-outline"
   src="/src/assets/icons/close-outline.svg"
   class="icon"
 >
 </button>
-<button class="button">Продолжить чтение</button>
-<p class="notification__text">Этот файл уже был загружен. Желаете ли продолжить его чтение?</p>
+<button data-i18n="continueReading" class="button">Continue reading</button>
+<p data-i18n="fileHasAlreadyBeenUploaded" class="notification__text">This file has already been uploaded. Would you like to continue reading it?</p>
 </div>
 `,
   document.body,
@@ -72,63 +80,98 @@ const createHasAlreadyReadNotification = (lastPageRead) => createInteractiveFrag
   },
 );
 
-const onInputChangeSpeedReading = () => {
-  delay = msPerMinute / speedReadingRangeInput.value;
+const onInputRangeChangeSpeedReading = () => {
+  delay = MS_PER_MINUTE / speedReadingRangeInput.value;
 
-  speedReadingRangeOutput.value = parseInt(speedReadingRangeInput.value);
+  speedReadingNumberInput.value = speedReadingRangeInput.value;
 };
 
-const renderPage = () => {
-  // TODO: написать обработку исключений
-  pdf
-    .getPage(currentPage)
-    .then((page) => page.getTextContent())
-    .then((textContent) => {
-      const pageText = textContent.items.map((item) => item.str).join(' ');
+const onBlurNumberChangeSpeedReading = () => {
+  delay = MS_PER_MINUTE / speedReadingRangeInput.value;
 
-      const wordsFromPdfTextElement = pageText.replace(
-        /(?<=[а-яёa-z])-\s+(?=[а-яёa-z])/gi,
-        '',
-      ).split(/(?<!-|–)\s+/i);
+  speedReadingRangeInput.value = speedReadingNumberInput.value;
 
-      let currentWordIndex = 0;
+  if (Number(speedReadingNumberInput.value) > speedReadingNumberInput.getAttribute('max')) {
+    speedReadingNumberInput.value = speedReadingNumberInput.getAttribute('max');
+  }
 
-      onInputChangeSpeedReading();
-
-      const displayNextWord = () => {
-        if (currentWordIndex < wordsFromPdfTextElement.length) {
-          const word = wordsFromPdfTextElement[currentWordIndex];
-
-          const partsOfWord = [
-            word.slice(
-              0,
-              Math.floor(word.length / 2),
-            ),
-            word[Math.floor(word.length / 2)],
-            word.slice(Math.floor(word.length / 2) + 1),
-          ];
-
-          wordPartStart.textContent = partsOfWord[0];
-
-          wordPartMiddle.textContent = partsOfWord[1];
-
-          wordPartEnd.textContent = partsOfWord[2];
-
-          currentWordIndex++;
-          setTimeout(
-            displayNextWord,
-            delay,
-          );
-        }
-      };
-
-      setTimeout(
-        displayNextWord,
-        delay,
-      );
-    });
+  speedReadingNumberInput.value = speedReadingNumberInput.value.replace(
+    /[^0-9]/g,
+    '',
+  );
 };
 
+const renderPage = async () => {
+  try {
+    const page = await pdf.getPage(currentPage);
+    const textContent = await page.getTextContent();
+
+    pageText = textContent.items.map((item) => item.str).join(' ');
+  } catch (error) {
+    console.error(
+      'Error while extracting text from PDF:',
+      error,
+    );
+
+    return;
+  }
+
+  if (!pageText) {
+    console.warn('Page text is empty, skipping processing.');
+
+    return;
+  }
+
+  const wordsFromPdfTextElement = pageText
+    .replace(
+      /(?<=[а-яёa-z])-\s+(?=[а-яёa-z])/gi,
+      '',
+    )
+    .split(/(?<!-|–)\s+/i);
+
+  onInputRangeChangeSpeedReading();
+  onBlurNumberChangeSpeedReading();
+
+  const displayNextWord = () => {
+    if (currentWordIndex >= wordsFromPdfTextElement.length) {
+      playPauseIcon.src = '/src/assets/icons/play.svg';
+
+      return;
+    }
+
+    const word = wordsFromPdfTextElement[currentWordIndex];
+
+    const wordNumber = currentWordIndex + 1;
+    const lastWordNumber = wordsFromPdfTextElement.length;
+
+    wordShown.textContent = wordNumber;
+    totalWordsShown.textContent = lastWordNumber;
+
+    const partsOfWord = [
+      word.slice(
+        0,
+        Math.floor(word.length / 2),
+      ),
+      word[Math.floor(word.length / 2)],
+      word.slice(Math.floor(word.length / 2) + 1),
+    ];
+
+    wordPartStart.textContent = partsOfWord[0];
+    wordPartMiddle.textContent = partsOfWord[1];
+    wordPartEnd.textContent = partsOfWord[2];
+
+    currentWordIndex++;
+    readingTimeoutId = setTimeout(
+      displayNextWord,
+      delay,
+    );
+  };
+
+  readingTimeoutId = setTimeout(
+    displayNextWord,
+    delay,
+  );
+};
 
 const onChangeUploadedFile = (event) => {
   const input = event.target;
@@ -138,6 +181,9 @@ const onChangeUploadedFile = (event) => {
   if (!file) {
     return;
   }
+
+  playPauseButton.style.display = 'flex';
+  wordsCounter.style.display = 'flex';
 
   const fileReader = new FileReader();
 
@@ -172,7 +218,6 @@ const setCurrentPage = (pageNumber) => {
   }
 
   currentPage = pageNumber;
-  renderPage();
   updateButtonsDisability();
 
   const pdfs = JSON.parse(localStorage.getItem(PDFS_KEY)) || [];
@@ -210,11 +255,23 @@ const setCurrentPage = (pageNumber) => {
   );
 };
 
+const clearWordDisplay = () => {
+  wordPartStart.textContent = '';
+  wordPartMiddle.textContent = '';
+  wordPartEnd.textContent = '';
+};
+
 const onClickButtonPrev = () => {
+  onClickStartStopSpeedReading();
+  currentWordIndex = 0;
+  clearWordDisplay();
   setCurrentPage(currentPage - 1);
 };
 
 const onClickButtonNext = () => {
+  onClickStartStopSpeedReading();
+  currentWordIndex = 0;
+  clearWordDisplay();
   setCurrentPage(currentPage + 1);
 };
 
@@ -227,8 +284,15 @@ const updateButtonsDisability = () => {
   nextPageButton.disabled = currentPage >= pdf.numPages;
 };
 
-const startSpeedReading = () => {
-  renderPage();
+const onClickStartStopSpeedReading = () => {
+  if (readingTimeoutId) {
+    clearTimeout(readingTimeoutId);
+    readingTimeoutId = null;
+    playPauseIcon.src = '/src/assets/icons/play.svg';
+  } else {
+    renderPage();
+    playPauseIcon.src = '/src/assets/icons/pause.svg';
+  }
 };
 
 const loadTranslations = async (locale) => {
