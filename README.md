@@ -28,7 +28,7 @@
 
 1.  **Клонирование репозитория:**
     ```bash
-    git clone [https://github.com/martsdag/speed-reading.git](https://github.com/martsdag/speed-reading.git)
+    git clone https://github.com/martsdag/speed-reading.git
     ```
 2.  **Запуск:**
     Для корректной работы системы переводов (загрузка JSON-файлов через `fetch`) проект необходимо запускать через локальный сервер.
