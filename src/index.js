@@ -133,6 +133,10 @@ const renderPage = async () => {
   onBlurNumberChangeSpeedReading();
 
   const displayNextWord = () => {
+    if (!readingTimeoutId) {
+      return;
+    }
+
     if (currentWordIndex >= wordsFromPdfTextElement.length) {
       playPauseIcon.src = '/src/assets/icons/play.svg';
 
